@@ -203,77 +203,7 @@ async function createtrojan(username, exp, quota, limitip, serverId) {
         });
     });
 }
-// Fungsi Shadowsocks dipertahankan, namun endpoint disesuaikan
-async function createshadowsocks(username, exp, quota, limitip, serverId) {
-  console.log(`Creating Shadowsocks account for ${username}...`);
-  
-  if (/\s/.test(username) || /[^a-zA-Z0-9]/.test(username)) {
-    return '❌ Username tidak valid. Mohon gunakan hanya huruf dan angka tanpa spasi.';
-  }
-
-  return new Promise((resolve) => {
-    db.get('SELECT * FROM Server WHERE id = ?', [serverId], (err, server) => {
-      if (err || !server) return resolve('❌ Server tidak ditemukan. Silakan coba lagi.');
-
-      const domain = server.domain;
-      const auth = server.auth;
-      // Menggunakan port 6969
-      const param = `:6969/create-shadowsocks?user=${username}&exp=${exp}&quota=${quota}&limitip=${limitip}&auth=${auth}`;
-      const url = `http://${domain}${param}`;
-      axios.get(url)
-        .then(response => {
-          if (response.data.status === "success") {
-            const ssData = response.data.data;
-            const msg = `
-🌟 *AKUN SHADOWSOCKS PREMIUM* 🌟
-
-🔹 *Informasi Akun*
-┌─────────────────────
-│ *Username* : \`${ssData.username}\`
-│ *Domain* : \`${ssData.domain}\`
-│ *NS* : \`${ssData.ns_domain}\`
-│ *Port TLS* : \`443\`
-│ *Port HTTP*: \`80\`
-│ *Alter ID* : \`0\`
-│ *Security* : \`Auto\`
-│ *Network* : \`Websocket (WS)\`
-│ *Path* : \`/shadowsocks\`
-│ *Path GRPC*: \`shadowsocks-grpc\`
-└─────────────────────
-🔐 *URL SHADOWSOCKS TLS*
-\`\`\`
-${ssData.ss_link_ws}
-\`\`\`
-🔒 *URL SHADOWSOCKS GRPC*
-\`\`\`
-${ssData.ss_link_grpc}
-\`\`\`
-🔒 *PUBKEY*
-\`\`\`
-${ssData.pubkey}
-\`\`\`
-┌─────────────────────
-│ Expiry: \`${ssData.expired}\`
-│ Quota: \`${ssData.quota === '0 GB' ? 'Unlimited' : ssData.quota}\`
-│ IP Limit: \`${ssData.ip_limit === '0' ? 'Unlimited' : ssData.ip_limit} IP\`
-└─────────────────────
-`;
-            const buttons = [
-                [{ text: '🔗 OpenClash Config', url: `https://${ssData.domain}:81/shadowsocks-${ssData.username}.txt` }],
-                [{ text: '🌐 Dashboard Akun', url: `https://${ssData.domain}/api/shadowsocks-${ssData.username}.html` }],
-            ];
-            return resolve({ msg, buttons });
-          } else {
-            return resolve({ msg: `❌ Terjadi kesalahan: ${response.data.message}`, buttons: [] });
-          }
-        })
-        .catch(error => {
-          console.error('Error saat membuat Shadowsocks:', error);
-          return resolve({ msg: '❌ Terjadi kesalahan saat membuat Shadowsocks. Silakan coba lagi nanti.', buttons: [] });
-        });
-    });
-  });
-}
+// Fungsi Shadowsocks dihapus total
 
 // --- Fungsi Trial Akun (New) ---
 
@@ -405,6 +335,6 @@ async function trialtrojan(serverId, quota, iplimit) {
 
 
 module.exports = { 
-    createssh, createvmess, createvless, createtrojan, createshadowsocks,
+    createssh, createvmess, createvless, createtrojan, 
     trialssh, trialvmess, trialvless, trialtrojan
 };
