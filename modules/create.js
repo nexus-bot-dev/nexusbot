@@ -203,7 +203,9 @@ async function createtrojan(username, exp, quota, limitip, serverId) {
         });
     });
 }
-// Fungsi Shadowsocks dihapus total
+
+// Fungsi createshadowsocks dihapus
+
 
 // --- Fungsi Trial Akun (New) ---
 
